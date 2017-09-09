@@ -1,0 +1,114 @@
+# slate 配置文件
+
+# Global Configs 全局配置
+config defaultToCurrentScreen true
+
+# Show icons & letters on all windows w/ Window Hints
+config windowHintsShowIcons true
+config windowHintsIgnoreHiddenWindows false
+config windowHintsSpread true
+
+# Show a positioning grid for each monitor
+bind g:cmd grid padding:5 0:2,1
+
+# Monitor Aliases
+alias mon-macbook 0    # 笔记本屏幕
+alias mon-right 1    # 外接右边的显示屏
+
+# General aliases
+alias hyper cmd;alt 
+alias sox screenOriginX
+alias soy screenOriginY
+alias ssx screenSizeX
+alias ssy screenSizeY
+
+# Abstract positions    # 相对位置
+alias centered           ${sox}+${ssx}/8;${soy}+${ssy}/8 ${ssx}/8*6;${ssy}/8*6
+alias fullscreen         ${sox};${soy} ${ssx};${ssy}
+alias leftHalf           ${sox};${soy} ${ssx}/2;${ssy}
+alias bottomHalf         ${sox};${soy}+${ssy}/2 ${ssx};${ssy}/2
+alias topHalf            ${sox};${soy} ${ssx};${ssy}/2
+alias rightHalf          ${sox}+${ssx}/2;${soy} ${ssx}/2;${ssy}
+alias topLeftQuarter     ${sox};${soy} ${ssx}/2;${ssy}/2
+alias topRightQuarter    ${sox}+${ssx}/2;${soy} ${ssx}/2;${ssy}/2
+alias bottomLeftQuarter  ${sox};${soy}+${ssy}/2 ${ssx}/2;${ssy}/2
+alias bottomRightQuarter ${sox}+${ssx}/2;${soy}+${ssy}/2 ${ssx}/2;${ssy}/2
+alias topThird           ${sox};${soy} ${ssx};${ssy}/3
+alias leftThird          ${sox};${soy} ${ssx}/3;${ssy}
+alias bottomThird        ${sox};${soy}+${ssy}/3 ${ssx};${ssy}/3
+alias rightThird         ${sox}+${ssx}/3*2;${soy} ${ssx}/3;${ssy}
+
+# Concrete positions    # 具体位置
+alias 1-full        move ${sox};${soy} ${ssx};${ssy}                ${mon-macbook}
+alias 1-left        move ${sox};${soy} ${ssx}/2;${ssy}              ${mon-macbook}
+alias 1-right       move ${sox}+${ssx}/2;${soy} ${ssx}/2;${ssy}     ${mon-macbook}
+alias 1-rightThird  move ${sox}+${ssx}/3*2;${soy} ${ssx}/3;${ssy}   ${mon-macbook}
+alias 2-left        move ${sox};${soy} ${ssx}/2;${ssy}              ${mon-right}
+alias 2-right       move ${sox}+${ssx}/2;${soy} ${ssx}/2;${ssy}     ${mon-right}
+alias 2-righttop    move ${sox}+${ssx}/2;${soy} ${ssx}/2;${ssy}/2   ${mon-right}
+alias 2-rightbottom move ${sox}+${ssx}/2;${soy}+${ssy}/2 ${ssx}/2;${ssy}/2       ${mon-right}
+alias 2-rightThird  move ${sox}+${ssx}/3*2;${soy} ${ssx}/3;${ssy}   ${mon-right}
+
+# 2 Monitors layout 两个显示器时的布局
+layout 2monitors 'Emacs':REPEAT          ${2-left}
+layout 2monitors 'Google Chrome':REPEAT  ${2-right}
+layout 2monitors 'ABBYY FineReader':REPEAT  ${1-full}
+
+# 1 Monitor layout 一个显示器时的布局  
+layout 1monitor 'iTerm':REPEAT          ${1-left}
+layout 1monitor 'Google Chrome':REPEAT  ${1-right}
+
+# Default Layouts
+default 1monitor resolutions:1366×768
+default 2monitors resolutions:1366×768;1366×1024
+
+# bind 1:cmd layout 1monitor
+# bind 2:cmd layout 2monitors
+
+# Pushing Binding
+bind h:cmd move ${leftHalf}
+bind l:cmd move ${rightHalf}
+bind k:cmd move ${topHalf}
+bind j:cmd move ${bottomHalf}
+bind u:cmd move ${topLeftQuarter}
+bind i:cmd move ${topRightQuarter}
+bind n:cmd move ${bottomLeftQuarter}
+bind m:cmd move ${bottomRightQuarter}
+bind g:cmd move ${centered}            
+bind a:cmd move ${fullscreen}
+bind o:cmd move ${leftThird}
+bind p:cmd move ${rightThird}
+
+# Resize Bindings
+bind l:${hyper}         resize +10% +0
+bind h:${hyper}         resize -10% +0
+bind k:${hyper}         resize +0   -10%
+bind j:${hyper}         resize +0   +10%
+
+# Nudge Bindings
+bind l:shift   nudge +10% +0
+bind h:shift   nudge -10% +0
+bind k:shift   nudge +0   -10%
+bind j:shift   nudge +0   +10%
+
+# Throw Bindings
+bind [:cmd         throw 0 resize:${ssx};${ssy}  
+bind ]:cmd         throw 1 resize:${ssx};${ssy}  
+
+# Window Hints
+bind esc:cmd hint ASDFGQWERTZXCVBN
+
+# Focus Bindings
+bind l:alt    focus right
+bind h:alt    focus left
+bind k:alt    focus up
+bind j:alt    focus down
+
+#App Bindings
+bind 1:alt focus "Emacs"
+bind 2:alt focus "Skim"
+bind 3:alt focus "Google Chrome" 
+bind 4:alt focus "iTerm"
+
+# Relaunch .slate 
+bind r:cmd relaunch
