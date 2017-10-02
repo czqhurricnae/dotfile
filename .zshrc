@@ -88,6 +88,10 @@ export PIP_RESPECT_VIRTUALENV=true
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias emacs='open -a /usr/local/Cellar/emacs/25.2/Emacs.app $1'
+alias emacs='open -a /usr/local/Cellar/emacs-plus/25.3/Emacs.app $1'
+# custom iterm2 titlebar background colors
+echo -e "\033]6;1;bg;red;brightness;0\a"
+echo -e "\033]6;1;bg;green;brightness;40\a"
+echo -e "\033]6;1;bg;blue;brightness;51\a"
 
 source "/Users/c/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
