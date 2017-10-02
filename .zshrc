@@ -57,11 +57,12 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
-# export MANPATH="/usr/local/man:$MANPATH"
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
+# Configure virtualenvwrapper
+export VIRTUALENV_USE_DISTRIBUTE=1        # <-- Always use pip/distribute
+export WORKON_HOME=$HOME/.virtualenvs	      # <-- Where all virtualenvs will be stored
+source /usr/local/bin/virtualenvwrapper.sh
+export PIP_VIRTUALENV_BASE=$WORKON_HOME
+export PIP_RESPECT_VIRTUALENV=true
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
