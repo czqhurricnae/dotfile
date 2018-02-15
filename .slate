@@ -75,7 +75,7 @@ bind i:cmd move ${topRightQuarter}
 bind n:cmd move ${bottomLeftQuarter}
 bind m:cmd move ${bottomRightQuarter}
 bind g:cmd move ${centered}            
-bind a:cmd move ${fullscreen}
+bind z:cmd move ${fullscreen}
 bind o:cmd move ${leftThird}
 bind p:cmd move ${rightThird}
 
@@ -86,10 +86,10 @@ bind k:${hyper}         resize +0   -10%
 bind j:${hyper}         resize +0   +10%
 
 # Nudge Bindings
-bind l:shift   nudge +10% +0
-bind h:shift   nudge -10% +0
-bind k:shift   nudge +0   -10%
-bind j:shift   nudge +0   +10%
+bind l:alt     nudge +10% +0
+bind h:alt     nudge -10% +0
+bind k:alt     nudge +0   -10%
+bind j:alt     nudge +0   +10%
 
 # Throw Bindings
 bind [:cmd         throw 0 resize:${ssx};${ssy}  
@@ -106,9 +106,12 @@ bind j:alt    focus down
 
 #App Bindings
 bind 1:alt focus "Emacs"
-bind 2:alt focus "Skim"
+bind 2:alt focus "IINA"
 bind 3:alt focus "Google Chrome" 
 bind 4:alt focus "iTerm2"
+bind 5:alt focus "PDF Expert"
+bind 6:alt focus "WizNote"
+bind `:alt focus "PyCharm"
 
 # Relaunch .slate 
 bind r:cmd relaunch
