@@ -8,6 +8,12 @@ export ZSH=/Users/c/.oh-my-zsh
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 ZSH_THEME="spaceship"
+source "/Users/c/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
+
+# custom iterm2 titlebar background colors
+echo -e "\033]6;1;bg;red;brightness;0\a"
+echo -e "\033]6;1;bg;green;brightness;40\a"
+echo -e "\033]6;1;bg;blue;brightness;51\a"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -29,7 +35,7 @@ ZSH_THEME="spaceship"
 # DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
+ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
 # COMPLETION_WAITING_DOTS="true"
@@ -53,12 +59,9 @@ ZSH_THEME="spaceship"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git tmux)
 
-source $ZSH/oh-my-zsh.sh
-
 # User configuration
-
 # Configure virtualenvwrapper
-export VIRTUALENV_USE_DISTRIBUTE=1        # <-- Always use pip/distribute
+export VIRTUALENV_USE_DISTRIBUTE=1            # <-- Always use pip/distribute
 export WORKON_HOME=$HOME/.virtualenvs	      # <-- Where all virtualenvs will be stored
 source /usr/local/bin/virtualenvwrapper.sh
 export PIP_VIRTUALENV_BASE=$WORKON_HOME
@@ -88,10 +91,15 @@ export PIP_RESPECT_VIRTUALENV=true
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias emacs='open -a /usr/local/Cellar/emacs-plus/25.3/Emacs.app $1'
-# custom iterm2 titlebar background colors
-echo -e "\033]6;1;bg;red;brightness;0\a"
-echo -e "\033]6;1;bg;green;brightness;40\a"
-echo -e "\033]6;1;bg;blue;brightness;51\a"
 
-source "/Users/c/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
+alias emacs='open -a /usr/local/Cellar/emacs-plus/25.3/Emacs.app $1'
+
+# It works only in the virtual environment which has installed ipython such as a
+# "ipy" one.
+# Usage:
+# -> workon ipy <- select the environment has installed ipython
+# ->ipy         <- use the alias to call ipython
+alias ipy="python -c 'import IPython;
+IPython.terminal.ipapp.launch_new_instance()'"
+
+source $ZSH/oh-my-zsh.sh
