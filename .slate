@@ -13,7 +13,7 @@ bind g:cmd grid padding:5 0:2,1
 
 # Monitor Aliases
 alias mon-macbook 0    # 笔记本屏幕
-alias mon-right 1    # 外接右边的显示屏
+alias mon-right 1      # 外接右边的显示屏
 
 # General aliases
 alias hyper cmd;alt 
@@ -22,7 +22,7 @@ alias soy screenOriginY
 alias ssx screenSizeX
 alias ssy screenSizeY
 
-# Abstract positions    # 相对位置
+# Abstract positions     # 相对位置
 alias centered           ${sox}+${ssx}/8;${soy}+${ssy}/8 ${ssx}/8*6;${ssy}/8*6
 alias fullscreen         ${sox};${soy} ${ssx};${ssy}
 alias leftHalf           ${sox};${soy} ${ssx}/2;${ssy}
@@ -72,8 +72,8 @@ bind k:cmd move ${topHalf}
 bind j:cmd move ${bottomHalf}
 bind u:cmd move ${topLeftQuarter}
 bind i:cmd move ${topRightQuarter}
-bind n:cmd move ${bottomLeftQuarter}
-bind m:cmd move ${bottomRightQuarter}
+bind t:cmd move ${bottomLeftQuarter}
+bind y:cmd move ${bottomRightQuarter}
 bind g:cmd move ${centered}            
 bind z:cmd move ${fullscreen}
 bind o:cmd move ${leftThird}
@@ -86,10 +86,10 @@ bind k:${hyper}         resize +0   -10%
 bind j:${hyper}         resize +0   +10%
 
 # Nudge Bindings
-bind l:alt     nudge +10% +0
-bind h:alt     nudge -10% +0
-bind k:alt     nudge +0   -10%
-bind j:alt     nudge +0   +10%
+bind l:alt     nudge +2% +0
+bind h:alt     nudge -2% +0
+bind k:alt     nudge +0   -2%
+bind j:alt     nudge +0   +2%
 
 # Throw Bindings
 bind [:cmd         throw 0 resize:${ssx};${ssy}  
@@ -98,7 +98,7 @@ bind ]:cmd         throw 1 resize:${ssx};${ssy}
 # Window Hints
 bind esc:cmd hint ASDFGQWERTZXCVBN
 
-# Focus Bindings
+# Focus Bindingj
 bind l:alt    focus right
 bind h:alt    focus left
 bind k:alt    focus up
@@ -106,7 +106,7 @@ bind j:alt    focus down
 
 #App Bindings
 bind 1:alt focus "Emacs"
-bind 2:alt focus "IINA"
+bind 2:alt focus "MarginNote X"
 bind 3:alt focus "Google Chrome" 
 bind 4:alt focus "iTerm2"
 bind 5:alt focus "PDF Expert"

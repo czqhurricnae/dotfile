@@ -1,6 +1,5 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
-
 # Path to your oh-my-zsh installation.
 export ZSH=/Users/c/.oh-my-zsh
 
@@ -57,7 +56,7 @@ ENABLE_CORRECTION="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git tmux)
+plugins=(git tmux osx github zsh-syntax-highlighting zsh-completion)
 
 # User configuration
 # Configure virtualenvwrapper
@@ -92,7 +91,7 @@ export PIP_RESPECT_VIRTUALENV=true
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-alias emacs='open -a /usr/local/Cellar/emacs-plus/25.3/Emacs.app $1'
+alias emacs='open $1 -a /usr/local/Cellar/emacs-plus/25.3/Emacs.app --args --debug-init'
 
 # It works only in the virtual environment which has installed ipython such as a
 # "ipy" one.

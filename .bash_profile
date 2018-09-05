@@ -2,6 +2,7 @@ source ~/.zshrc
 # Configure pyenv
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
+export PATH="$HOME/code2ebook:$PATH"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
