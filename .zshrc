@@ -7,12 +7,6 @@ export ZSH=/Users/c/.oh-my-zsh
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 ZSH_THEME="spaceship"
-source "/Users/c/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
-
-# custom iterm2 titlebar background colors
-echo -e "\033]6;1;bg;red;brightness;0\a"
-echo -e "\033]6;1;bg;green;brightness;40\a"
-echo -e "\033]6;1;bg;blue;brightness;51\a"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -59,8 +53,12 @@ ENABLE_CORRECTION="true"
 # 安装 tmux
 # brew install tmux
 # 安装 spaceship 主题
-# npm install -g spaceship-zsh-theme
-plugins=(git tmux osx github zsh-syntax-highlighting zsh-completion)
+# npm install -g spaceship-prompt
+# 安装 zsh-syntax-highlighting
+# git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+# 安装 zsh-completions
+# git clone https://github.com/zsh-users/zsh-completions ~/.oh-my-zsh/custom/plugins/zsh-completions
+plugins=(git tmux osx github zsh-syntax-highlighting zsh-completions)
 
 # User configuration
 # Configure virtualenvwrapper
@@ -92,10 +90,10 @@ export PIP_RESPECT_VIRTUALENV=true
 # For a full list of active aliases, run `alias`.
 #
 # Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+# alias zshconfig="~/.zshrc"
+# alias ohmyzsh="~/.oh-my-zsh"
 
-alias emacs='open $1 -a /usr/local/Cellar/emacs-plus/25.3/Emacs.app --args --debug-init'
+# alias emacs='open $1 -a /usr/local/Cellar/emacs-plus/25.3/Emacs.app --args --debug-init'
 
 # It works only in the virtual environment which has installed ipython such as a
 # "ipy" one.
@@ -106,6 +104,6 @@ alias ipy="python -c 'import IPython;
 IPython.terminal.ipapp.launch_new_instance()'"
 
 source $ZSH/oh-my-zsh.sh
-
-
-source "/Users/c/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
+# Set Spaceship ZSH as a prompt
+autoload -U promptinit; promptinit
+prompt spaceship

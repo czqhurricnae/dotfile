@@ -110,6 +110,7 @@ bind 2:alt focus "MarginNote3"
 bind 3:alt focus "Google Chrome"
 bind 4:alt focus "IINA"
 bind 5:alt focus "iTerm"
+bind 6:alt focus "PDF Expert"
 bind `:alt focus "emacs"
 
 # Relaunch .slate
