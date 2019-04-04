@@ -1,11 +1,13 @@
 source ~/.zshrc
+
 # Configure pyenv
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
-export PATH="$HOME/code2ebook:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
+# eval "$(pyenv init -)"
+# eval "$(pyenv virtualenv-init -)"
 
+export PATH="$HOME/code2ebook:$PATH"
+export PATH="$HOME/tools:$PATH"
 # Added by Anaconda3 4.4.0 installer
 export PATH="/Volumes/Media/anaconda/bin:$PATH"
 

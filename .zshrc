@@ -56,11 +56,15 @@ ENABLE_CORRECTION="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+# 安装 tmux
+# brew install tmux
+# 安装 spaceship 主题
+# npm install -g spaceship-zsh-theme
 plugins=(git tmux osx github zsh-syntax-highlighting zsh-completion)
 
 # User configuration
 # Configure virtualenvwrapper
-export VIRTUALENV_USE_DISTRIBUTE=1            # <-- Always use pip/distribute
+export VIRTUALENV_USE_DISTRIBUTE=1          # <-- Always use pip/distribute
 export WORKON_HOME=$HOME/.virtualenvs	      # <-- Where all virtualenvs will be stored
 source /usr/local/bin/virtualenvwrapper.sh
 export PIP_VIRTUALENV_BASE=$WORKON_HOME
@@ -102,3 +106,6 @@ alias ipy="python -c 'import IPython;
 IPython.terminal.ipapp.launch_new_instance()'"
 
 source $ZSH/oh-my-zsh.sh
+
+
+source "/Users/c/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
