@@ -16,7 +16,7 @@ alias mon-macbook 0    # 笔记本屏幕
 alias mon-right 1      # 外接右边的显示屏
 
 # General aliases
-alias hyper cmd;alt 
+alias hyper cmd;alt
 alias sox screenOriginX
 alias soy screenOriginY
 alias ssx screenSizeX
@@ -54,7 +54,7 @@ layout 2monitors 'Emacs':REPEAT          ${2-left}
 layout 2monitors 'Google Chrome':REPEAT  ${2-right}
 layout 2monitors 'ABBYY FineReader':REPEAT  ${1-full}
 
-# 1 Monitor layout 一个显示器时的布局  
+# 1 Monitor layout 一个显示器时的布局
 layout 1monitor 'iTerm':REPEAT          ${1-left}
 layout 1monitor 'Google Chrome':REPEAT  ${1-right}
 
@@ -74,7 +74,7 @@ bind u:cmd move ${topLeftQuarter}
 bind i:cmd move ${topRightQuarter}
 bind t:cmd move ${bottomLeftQuarter}
 bind y:cmd move ${bottomRightQuarter}
-bind g:cmd move ${centered}            
+bind g:cmd move ${centered}
 bind z:cmd move ${fullscreen}
 bind o:cmd move ${leftThird}
 bind p:cmd move ${rightThird}
@@ -92,8 +92,8 @@ bind k:alt     nudge +0   -2%
 bind j:alt     nudge +0   +2%
 
 # Throw Bindings
-bind [:cmd         throw 0 resize:${ssx};${ssy}  
-bind ]:cmd         throw 1 resize:${ssx};${ssy}  
+bind [:cmd         throw 0 resize:${ssx};${ssy}
+bind ]:cmd         throw 1 resize:${ssx};${ssy}
 
 # Window Hints
 bind esc:cmd hint ASDFGQWERTZXCVBN
@@ -105,13 +105,13 @@ bind k:alt    focus up
 bind j:alt    focus down
 
 #App Bindings
-bind 1:alt focus "Emacs"
-bind 2:alt focus "MarginNote X"
-bind 3:alt focus "Google Chrome" 
-bind 4:alt focus "iTerm2"
-bind 5:alt focus "PDF Expert"
-bind 6:alt focus "WizNote"
-bind `:alt focus "PyCharm"
+bind 1:alt focus "WizNote"
+bind 2:alt focus "MarginNote3"
+bind 3:alt focus "Google Chrome"
+bind 4:alt focus "IINA"
+bind 5:alt focus "iTerm"
+bind 6:alt focus "PDF Expert"
+bind `:alt focus "emacs"
 
-# Relaunch .slate 
+# Relaunch .slate
 bind r:cmd relaunch
