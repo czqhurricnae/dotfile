@@ -7,6 +7,7 @@ hs.loadSpoon("SpoonInstall")
 
 Install=spoon.SpoonInstall
 
+local inspect = require "inspect"
 local hyper = {'ctrl', 'cmd'}
 
 local alert = require 'hs.alert'
@@ -19,6 +20,7 @@ local layout = require 'hs.layout'
 local window = require 'hs.window'
 local speech = require 'hs.speech'
 
+require "control-hjkl-to-narrow"
 -- Init speaker.
 speaker = speech.new()
 
@@ -154,175 +156,180 @@ hs.hotkey.bind("alt-shift", "tab", function()
 end)
 
 function updateFocusAppInputMethod()
-    for key, app in pairs(key2App) do
-	local appPath = app[1]
-	local inputmethod = app[2]
+  for key, app in pairs(key2App) do
+    local appPath = app[1]
+    local inputmethod = app[2]
 
-	if window.focusedWindow():application():path() == appPath then
-	    if inputmethod == 'English' then
+    if window.focusedWindow():application():path() == appPath then
+      if inputmethod == 'English' then
         English()
-	    else
+      else
         Chinese()
-	    end
-	    break
-	end
+      end
+      break
     end
+  end
 end
 
 -- Handle cursor focus and application's screen manage.
 startAppPath = ""
 function applicationWatcher(appName, eventType, appObject)
-    -- Move cursor to center of application when application activated.
-    -- Then don't need move cursor between screens.
-    if (eventType == hs.application.watcher.activated) then
-        -- Just adjust cursor postion if app open by user keyboard.
-        if appObject:path() == startAppPath then
-            spoon.WinWin:centerCursor()
-            startAppPath = ""
-        end
+  -- Move cursor to center of application when application activated.
+  -- Then don't need move cursor between screens.
+  if (eventType == hs.application.watcher.activated) then
+    -- Just adjust cursor postion if app open by user keyboard.
+    if appObject:path() == startAppPath then
+      spoon.WinWin:centerCursor()
+      startAppPath = ""
     end
+  end
 end
 
 appWatcher = hs.application.watcher.new(applicationWatcher)
 appWatcher:start()
 
 function findApplication(appPath)
-    local apps = application.runningApplications()
-    for i = 1, #apps do
-        local app = apps[i]
-        if app:path() == appPath then
-            return app
-        end
+  local apps = application.runningApplications()
+  for i = 1, #apps do
+    local app = apps[i]
+    if app:path() == appPath then
+      return app
     end
+  end
 
-    return nil
+  return nil
 end
 
 function launchApp(appPath)
-    -- We need use Chrome's remote debug protocol that debug JavaScript code in Emacs.
-    -- So we need launch chrome with --remote-debugging-port argument instead application.launchOrFocus.
-    if appPath == "/Applications/Google Chrome.app" then
-        hs.execute("open -a 'Google Chrome' --args '--remote-debugging-port=9222'")
-    else
-        application.launchOrFocus(appPath)
-    end
+  -- We need use Chrome's remote debug protocol that debug JavaScript code in Emacs.
+  -- So we need launch chrome with --remote-debugging-port argument instead application.launchOrFocus.
+  if appPath == "/Applications/Google Chrome.app" then
+    hs.execute("open -a 'Google Chrome' --args '--remote-debugging-port=9222'")
+  else
+    application.launchOrFocus(appPath)
+  end
+end
+
+function focusedWindowAgain()
+  local focusedWin = hs.window.focusedWindow()
+  local frontmostApplication = hs.application.frontmostApplication()
+  if focusedWin == nil then
+    local mainwin = frontmostApplication:mainWindow()
+    mainwin:sendToBack()
+    mainwin:focus()
+  else
+    return nil
+  end
 end
 
 -- Toggle an application between being the frontmost app, and being hidden
 function toggleApplication(app)
-    local appPath = app[1]
-    local inputMethod = app[2]
+  local appPath = app[1]
+  local inputMethod = app[2]
 
-    -- Tag app path use for `applicationWatcher'.
-    startAppPath = appPath
+  -- Tag app path use for `applicationWatcher'.
+  startAppPath = appPath
 
-    local app = findApplication(appPath)
-    local setInputMethod = true
+  local app = findApplication(appPath)
+  local setInputMethod = true
 
-    if not app then
-        -- Application not running, launch app
-        launchApp(appPath)
+  if not app then
+    -- Application not running, launch app.
+    launchApp(appPath)
+  else
+    -- Application running, toggle hide/unhide
+    local mainwin = app:mainWindow()
+    if mainwin then
+      if app:isFrontmost() then
+        -- Show mouse circle if has focus on target application.
+        drawMouseCircle()
+        setInputMethod = false
+      else
+        -- Focus target application if it not at frontmost.
+        mainwin:application():activate(true)
+        mainwin:application():unhide()
+        mainwin:focus()
+      end
     else
-        -- Application running, toggle hide/unhide
-        local mainwin = app:mainWindow()
-        if mainwin then
-            if app:isFrontmost() then
-                -- Show mouse circle if has focus on target application.
-                drawMouseCircle()
-
-                setInputMethod = false
-            else
-                -- Focus target application if it not at frontmost.
-                mainwin:application():activate(true)
-                mainwin:application():unhide()
-                mainwin:focus()
-            end
-        else
-            -- Start application if application is hide.
-            if app:hide() then
-                launchApp(appPath)
-            end
-        end
+      -- Start application if application is hide.
+      if app:hide() then
+          launchApp(appPath)
+      end
     end
-
-    if setInputMethod then
-        if inputMethod == 'English' then
-            English()
-        else
-            Chinese()
-        end
-    end
+  end
+  focusedWindowAgain()
+  updateFocusAppInputMethod()
 end
 
 local mouseCircle = nil
 local mouseCircleTimer = nil
 
 function drawMouseCircle()
-    -- Kill previous circle if it still live.
-    circle = mouseCircle
-    timer = mouseCircleTimer
+  -- Kill previous circle if it still live.
+  circle = mouseCircle
+  timer = mouseCircleTimer
 
-    if circle then
-        circle:delete()
-        if timer then
-            timer:stop()
-        end
+  if circle then
+    circle:delete()
+    if timer then
+      timer:stop()
     end
+  end
 
-    -- Get mouse point.
-    mousepoint = hs.mouse.getAbsolutePosition()
+  -- Get mouse point.
+  mousepoint = hs.mouse.getAbsolutePosition()
 
-    -- Init circle color and raius.
-    local color = {
-        ["red"]= 92.0 / 255.0,
-        ["blue"]= 245.0 / 255.0,
-        ["green"]= 201.0 / 255.0,
-        ["alpha"]= 0.8}
+  -- Init circle color and raius.
+  local color = {
+    ["red"]= 92.0 / 255.0,
+    ["blue"]= 245.0 / 255.0,
+    ["green"]= 201.0 / 255.0,
+    ["alpha"]= 0.8}
 
-    raius = 30
+  raius = 30
 
-    -- Draw mouse circle.
-    circle = hs.drawing.circle(hs.geometry.rect(mousepoint.x - raius / 2, mousepoint.y - raius / 2, raius, raius))
-    circle:setStroke(false)
-    circle:setFillColor(color)
-    circle:bringToFront(true)
-    circle:show()
+  -- Draw mouse circle.
+  circle = hs.drawing.circle(hs.geometry.rect(mousepoint.x - raius / 2, mousepoint.y - raius / 2, raius, raius))
+  circle:setStroke(false)
+  circle:setFillColor(color)
+  circle:bringToFront(true)
+  circle:show()
 
-    -- Save circle in local variable.
-    mouseCircle = circle
+  -- Save circle in local variable.
+  mouseCircle = circle
 
-    -- Hide mouse circle after 0.5 second.
-    mouseCircleTimer = hs.timer.doAfter(
-        0.5,
-        function()
-            circle:hide(0.5)
-            hs.timer.doAfter(0.6, function() circle:delete() end)
-    end)
+  -- Hide mouse circle after 0.5 second.
+  mouseCircleTimer = hs.timer.doAfter(
+    0.5,
+    function()
+      circle:hide(0.5)
+      hs.timer.doAfter(0.6, function() circle:delete() end)
+  end)
 end
 
 moveToScreen = function(win, n)
-    local screens = hs.screen.allScreens()
-    if n > #screens then
-        hs.alert.show("No enough screens " .. #screens)
-    else
-        local toWin = hs.screen.allScreens()[n]:name()
-        hs.alert.show("Move " .. win:application():name() .. " to " .. toWin)
-        hs.layout.apply({{nil, win:title(), toWin, hs.layout.maximized, nil, nil}})
-    end
+  local screens = hs.screen.allScreens()
+  if n > #screens then
+    hs.alert.show("No enough screens " .. #screens)
+  else
+    local toWin = hs.screen.allScreens()[n]:name()
+    hs.alert.show("Move " .. win:application():name() .. " to " .. toWin)
+    hs.layout.apply({{nil, win:title(), toWin, hs.layout.maximized, nil, nil}})
+  end
 end
 
 function resizeToCenter()
-    local win = hs.window.focusedWindow()
-    local f = win:frame()
-    local screen = win:screen()
-    local max = screen:frame()
-    local winScale = 0.7
+  local win = hs.window.focusedWindow()
+  local f = win:frame()
+  local screen = win:screen()
+  local max = screen:frame()
+  local winScale = 0.7
 
-    f.x = max.x + (max.w * (1 - winScale) / 2)
-    f.y = max.y + (max.h * (1 - winScale) / 2)
-    f.w = max.w * winScale
-    f.h = max.h * winScale
-    win:setFrame(f)
+  f.x = max.x + (max.w * (1 - winScale) / 2)
+  f.y = max.y + (max.h * (1 - winScale) / 2)
+  f.w = max.w * winScale
+  f.h = max.h * winScale
+  win:setFrame(f)
 end
 
 function moveToBottomHalf()
@@ -381,7 +388,7 @@ e.2......6.3..........t..q....
 .....5c.......................
 ]]
 
-    caffeinateOffIcon = [[ASCII:
+caffeinateOffIcon = [[ASCII:
 .....1a.....x....AC.y.......zE
 ..............................
 ......4.......................
@@ -400,24 +407,24 @@ e.2......6.3..........t..q....
 local caffeinateTrayIcon = hs.menubar.new()
 
 local function caffeinateSetIcon(state)
-    caffeinateTrayIcon:setIcon(state and caffeinateOnIcon or caffeinateOffIcon)
+  caffeinateTrayIcon:setIcon(state and caffeinateOnIcon or caffeinateOffIcon)
 
-    if state then
-        caffeinateTrayIcon:setTooltip("Sleep never sleep")
-    else
-        caffeinateTrayIcon:setTooltip("System will sleep when idle")
-    end
+  if state then
+    caffeinateTrayIcon:setTooltip("Sleep never sleep")
+  else
+    caffeinateTrayIcon:setTooltip("System will sleep when idle")
+  end
 end
 
 local function toggleCaffeinate()
-    local sleepStatus = hs.caffeinate.toggle("displayIdle")
-    if sleepStatus then
-        hs.notify.new({title="System Sleep", informativeText="System never sleep"}):send()
-    else
-        hs.notify.new({title="System Sleep", informativeText="System will sleep when idle"}):send()
-    end
+  local sleepStatus = hs.caffeinate.toggle("displayIdle")
+  if sleepStatus then
+    hs.notify.new({title="System Sleep", informativeText="System never sleep"}):send()
+  else
+    hs.notify.new({title="System Sleep", informativeText="System will sleep when idle"}):send()
+  end
 
-    caffeinateSetIcon(sleepStatus)
+  caffeinateSetIcon(sleepStatus)
 end
 
 hs.hotkey.bind(hyper, "[", toggleCaffeinate)
@@ -428,94 +435,94 @@ caffeinateSetIcon(sleepStatus)
 hs.hotkey.bind("cmd", 'U', resizeToCenter)
 
 hs.hotkey.bind(
-    "cmd", "H",
-    function()
-        window.focusedWindow():moveToUnit(layout.left50)
+  "cmd", "H",
+  function()
+    window.focusedWindow():moveToUnit(layout.left50)
 end)
 
 hs.hotkey.bind(
-    "cmd", "L",
-    function()
-        window.focusedWindow():moveToUnit(layout.right50)
+  "cmd", "L",
+  function()
+    window.focusedWindow():moveToUnit(layout.right50)
 end)
 
 hs.hotkey.bind("cmd", "J", moveToBottomHalf)
 hs.hotkey.bind("cmd", "K", moveToTopHalf)
-hs.hotkey.bind("cmd", "Z", moveToFullSize)
+-- hs.hotkey.bind("cmd", "Z", moveToFullSize)
 
 hs.hotkey.bind(
-    hyper, "Z",
-    function()
-        window.focusedWindow():toggleFullScreen()
+  hyper, "Z",
+  function()
+    window.focusedWindow():toggleFullScreen()
 end)
 
 hs.hotkey.bind(
-    hyper, ";",
-    function()
-        -- Kill current focused window.
-        window.focusedWindow():close()
+  hyper, ";",
+  function()
+    -- Kill current focused window.
+    window.focusedWindow():close()
 
-        -- Then focus next window.
-        hs.window.frontmostWindow():focus()
+    -- Then focus next window.
+    hs.window.frontmostWindow():focus()
 end)
 
 hs.hotkey.bind(
-    hyper, "-",
-    function()
-        hs.application.frontmostApplication():kill()
+  hyper, "-",
+  function()
+    hs.application.frontmostApplication():kill()
 end)
 
 hs.hotkey.bind(
-    hyper, ".",
-    function()
-        hs.alert.show(string.format("App path:        %s\nApp name:      %s\nIM source id:  %s",
-                                    window.focusedWindow():application():path(),
-                                    window.focusedWindow():application():name(),
-                                    hs.keycodes.currentSourceID()))
+  hyper, ".",
+  function()
+    hs.alert.show(string.format("App path:        %s\nApp name:      %s\nIM source id:  %s",
+                                window.focusedWindow():application():path(),
+                                window.focusedWindow():application():name(),
+                                hs.keycodes.currentSourceID()))
 end)
 
 hotkey.bind(
-    hyper, '/',
-    function()
-        hints.windowHints()
+  hyper, '/',
+  function()
+    hints.windowHints()
 end)
 
 -- Start or focus application.
 for key, app in pairs(key2App) do
     hotkey.bind(
-        hyper, key,
-        function()
-            toggleApplication(app)
+      hyper, key,
+      function()
+        toggleApplication(app)
     end)
 end
 
 -- Move application to screen.
 hs.hotkey.bind(
-    hyper, "1",
-    function()
-        moveToScreen(hs.window.focusedWindow(), 1)
+  hyper, "1",
+  function()
+    moveToScreen(hs.window.focusedWindow(), 1)
 end)
 
 hs.hotkey.bind(
-    hyper, "2",
-    function()
-        moveToScreen(hs.window.focusedWindow(), 2)
+  hyper, "2",
+  function()
+    moveToScreen(hs.window.focusedWindow(), 2)
 end)
 
 -- Binding key to start plugin.
 Install:andUse(
-    "WindowHalfsAndThirds",
-    {
-        config = {use_frame_correctness = true},
-        hotkeys = {max_toggle = {hyper, "I"}}
+  "WindowHalfsAndThirds",
+  {
+    config = {use_frame_correctness = true},
+    hotkeys = {max_toggle = {"cmd", "Z"}}
 })
 
 Install:andUse(
-    "WindowGrid",
-    {
-        config = {gridGeometries = {{"6x4"}}},
-        hotkeys = {show_grid = {hyper, ","}},
-        start = true
+  "WindowGrid",
+  {
+    config = {gridGeometries = {{"6x4"}}},
+    hotkeys = {show_grid = {hyper, ","}},
+    start = true
 })
 
 -- Show application keystroke window.
@@ -523,26 +530,26 @@ local ksheetIsShow = false
 local ksheetAppPath = ""
 
 hs.hotkey.bind(
-    hyper, "N",
-    function ()
-        local currentAppPath = window.focusedWindow():application():path()
+  hyper, "N",
+  function ()
+    local currentAppPath = window.focusedWindow():application():path()
 
-        -- Toggle ksheet window if cache path equal current app path.
-        if ksheetAppPath == currentAppPath then
-            if ksheetIsShow then
-                spoon.KSheet:hide()
-                ksheetIsShow = false
-            else
-                spoon.KSheet:show()
-                ksheetIsShow = true
-            end
-            -- Show app's keystroke if cache path not equal current app path.
-        else
-            spoon.KSheet:show()
-            ksheetIsShow = true
+    -- Toggle ksheet window if cache path equal current app path.
+    if ksheetAppPath == currentAppPath then
+      if ksheetIsShow then
+        spoon.KSheet:hide()
+        ksheetIsShow = false
+      else
+        spoon.KSheet:show()
+        ksheetIsShow = true
+      end
+      -- Show app's keystroke if cache path not equal current app path.
+    else
+      spoon.KSheet:show()
+      ksheetIsShow = true
 
-            ksheetAppPath = currentAppPath
-        end
+      ksheetAppPath = currentAppPath
+    end
 end)
 
 -- hs.hotkey.new({}, "escape", nil,
@@ -557,22 +564,23 @@ local v2rayPath = "/Users/andy/v2ray/v2ray"
 local v2rayTask = nil
 
 local function stopV2ray()
-    if v2rayTask and v2rayTask:isRunning() then
-        v2rayTask:terminate()
-    end
+  if v2rayTask and v2rayTask:isRunning() then
+    v2rayTask:terminate()
+  end
 end
 
 local function startV2ray()
-    v2rayTask = hs.task.new(v2rayPath, nil)
-    v2rayTask:start()
+  v2rayTask = hs.task.new(v2rayPath, nil)
+  v2rayTask:start()
 end
 
 local function reloadV2ray()
-    stopV2ray()
-    startV2ray()
+  stopV2ray()
+  startV2ray()
 
-    hs.notify.new({title="Manatee", informativeText="Reload v2ray"}):send()
+  hs.notify.new({title="Manatee", informativeText="Reload v2ray"}):send()
 end
+
 startV2ray()
 
 local v2rayTrayIcon = hs.menubar.new()

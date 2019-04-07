@@ -6,7 +6,6 @@ export ZSH=/Users/c/.oh-my-zsh
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="spaceship"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -58,7 +57,7 @@ ENABLE_CORRECTION="true"
 # git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 # 安装 zsh-completions
 # git clone https://github.com/zsh-users/zsh-completions ~/.oh-my-zsh/custom/plugins/zsh-completions
-plugins=(git tmux osx github zsh-syntax-highlighting zsh-completions)
+plugins=(git tmux osx github)
 
 # User configuration
 # Configure virtualenvwrapper

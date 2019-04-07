@@ -24,6 +24,6 @@ JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk-9.0.4.jdk/Contents/Home"
 CLASS_PATH="$JAVA_HOME/lib"
 PATH=".:$PATH:$JAVA_HOME/bin::/usr/local/apache-tomcat-9.0.5/bin"
 export JAVA_HOME
-export CLASSPATH
+export CLASS_PATH
 export PATH
 export PYTHONSTARTUP=~/.pythonstartup
