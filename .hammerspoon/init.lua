@@ -45,6 +45,8 @@ hs.window.animationDuration = 0 -- don't waste time on animation when resize win
 -- Key to launch application.
 local key2App = {
     h = {'/usr/local/Cellar/emacs-mac/emacs-26.2-rc1-mac-7.5/Emacs.app', 'English'},
+    j= {'/Applications/WizNote.app', 'English'},
+    k= {'/Applications/MarginNote 3.app', 'English'},
     l = {'/Volumes/内置500/Application/Google Chrome.app', 'English'},
     o = {'/System/Library/CoreServices/Finder.app', 'English'},
     p = {'/Applications/System Preferences.app', 'English'},
@@ -99,12 +101,34 @@ windowCreateFilter:subscribe(
 end)
 
 -- Manage application's inputmethod status.
+SELECTENGLISHINPUTSOURCE = [[
+tell application "System Events"
+	set englishInputSourceIsSelected to value of attribute "AXMenuItemMarkChar" of menu item 4 of menu 1 of menu bar item 5 of menu bar 1 of application process "SystemUIServer" is "✓"
+	if englishInputSourceIsSelected is false then
+		click menu bar item 5 of menu bar 1 of application process "SystemUIServer"
+		click menu item 4 of menu 1 of menu bar item 5 of menu bar 1 of application process "SystemUIServer"
+	end if
+end tell
+]]
+
+SELECTCHINESEINPUTSOURCE = [[
+tell application "System Events"
+	set englishInputSourceIsSelected to value of attribute "AXMenuItemMarkChar" of menu item 4 of menu 1 of menu bar item 5 of menu bar 1 of application process "SystemUIServer" is "✓"
+	if englishInputSourceIsSelected is true then
+		click menu bar item 5 of menu bar 1 of application process "SystemUIServer"
+		click menu item 4 of menu 1 of menu bar item 5 of menu bar 1 of application process "SystemUIServer"
+	end if
+end tell
+]]
+
 local function Chinese()
-    hs.keycodes.currentSourceID("com.sogou.inputmethod.sogou.pinyin")
+--    hs.keycodes.currentSourceID("com.sogou.inputmethod.sogou.pinyin")
+    hs.osascript.applescript(SELECTCHINESEINPUTSOURCE)
 end
 
 local function English()
-    hs.keycodes.currentSourceID("com.apple.keylayout.ABC")
+--    hs.keycodes.currentSourceID("com.apple.keylayout.ABC")
+    hs.osascript.applescript(SELECTENGLISHINPUTSOURCE)
 end
 
 -- Build better app switcher.
@@ -136,11 +160,10 @@ function updateFocusAppInputMethod()
 
 	if window.focusedWindow():application():path() == appPath then
 	    if inputmethod == 'English' then
-		English()
+        English()
 	    else
-		Chinese()
+        Chinese()
 	    end
-
 	    break
 	end
     end
@@ -522,12 +545,12 @@ hs.hotkey.bind(
         end
 end)
 
-hs.hotkey.new({}, "escape", nil,
-    function()
-        spoon.KSheet:hide()
-        ksheetIsShow = false
-        ksheetAppPath = ""
-end):enable()
+-- hs.hotkey.new({}, "escape", nil,
+--     function()
+--         spoon.KSheet:hide()
+--         ksheetIsShow = false
+--         ksheetAppPath = ""
+-- end):enable()
 
 -- Execute v2ray default, fuck GFW.
 local v2rayPath = "/Users/andy/v2ray/v2ray"
