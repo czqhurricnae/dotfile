@@ -7,7 +7,6 @@ hs.loadSpoon("SpoonInstall")
 
 Install=spoon.SpoonInstall
 
-local inspect = require "inspect"
 local hyper = {'ctrl', 'cmd'}
 
 local alert = require 'hs.alert'
@@ -19,6 +18,7 @@ local hotkey = require 'hs.hotkey'
 local layout = require 'hs.layout'
 local window = require 'hs.window'
 local speech = require 'hs.speech'
+local inspect = require "hs.inspect"
 
 require "control-hjkl-to-narrow"
 -- Init speaker.
@@ -312,8 +312,12 @@ moveToScreen = function(win, n)
   if n > #screens then
     hs.alert.show("No enough screens " .. #screens)
   else
-    local toWin = hs.screen.allScreens()[n]:name()
-    hs.alert.show("Move " .. win:application():name() .. " to " .. toWin)
+    local toWin = hs.screen.allScreens()[n]
+    local monitorName = toWin:name()
+    if not monitorName then
+      monitorName = "Duet"
+    end
+    hs.alert.show("Move " .. win:application():name() .. " to " .. monitorName)
     hs.layout.apply({{nil, win:title(), toWin, hs.layout.maximized, nil, nil}})
   end
 end
