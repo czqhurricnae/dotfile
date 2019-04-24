@@ -46,7 +46,7 @@ hs.window.animationDuration = 0 -- don't waste time on animation when resize win
 
 -- Key to launch application.
 local key2App = {
-    h = {'/usr/local/Cellar/emacs-mac/emacs-26.2-rc1-mac-7.5/Emacs.app', 'English'},
+    h = {'/usr/local/Cellar/emacs-mac/emacs-26.2-z-mac-7.6/Emacs.app', 'English'},
     j= {'/Applications/WizNote.app', 'English'},
     k= {'/Applications/MarginNote 3.app', 'English'},
     l = {'/Volumes/内置500/Application/Google Chrome.app', 'English'},
@@ -106,9 +106,15 @@ end)
 SELECTENGLISHINPUTSOURCE = [[
 tell application "System Events"
 	set englishInputSourceIsSelected to value of attribute "AXMenuItemMarkChar" of menu item 4 of menu 1 of menu bar item 5 of menu bar 1 of application process "SystemUIServer" is "✓"
+	set {originX, originY} to paragraphs of (do shell script "/Users/c/.spacemacs.d/MouseTools -location")
 	if englishInputSourceIsSelected is false then
-		click menu bar item 5 of menu bar 1 of application process "SystemUIServer"
-		click menu item 4 of menu 1 of menu bar item 5 of menu bar 1 of application process "SystemUIServer"
+		tell process "Sogou"
+			set {positionX, positionY} to position of menu bar item 1 of menu bar 1
+			set {sizeX, sizeY} to size of menu bar item 1 of menu bar 1
+			set {buttonX, buttonY} to {positionX + (sizeX div 2), positionY + (sizeY div 2)}
+			do shell script "/Users/c/.spacemacs.d/MouseTools" & " -x " & (buttonX as text) & " -y " & (buttonY as text) & " -leftClick"
+			do shell script "/Users/c/.spacemacs.d/MouseTools" & " -x " & (originX as text) & " -y " & (originY as text)
+		end tell
 	end if
 end tell
 ]]
@@ -116,9 +122,15 @@ end tell
 SELECTCHINESEINPUTSOURCE = [[
 tell application "System Events"
 	set englishInputSourceIsSelected to value of attribute "AXMenuItemMarkChar" of menu item 4 of menu 1 of menu bar item 5 of menu bar 1 of application process "SystemUIServer" is "✓"
+	set {originX, originY} to paragraphs of (do shell script "/Users/c/.spacemacs.d/MouseTools -location")
 	if englishInputSourceIsSelected is true then
-		click menu bar item 5 of menu bar 1 of application process "SystemUIServer"
-		click menu item 4 of menu 1 of menu bar item 5 of menu bar 1 of application process "SystemUIServer"
+		tell process "Sogou"
+			set {positionX, positionY} to position of menu bar item 1 of menu bar 1
+			set {sizeX, sizeY} to size of menu bar item 1 of menu bar 1
+			set {buttonX, buttonY} to {positionX + (sizeX div 2), positionY + (sizeY div 2)}
+			do shell script "/Users/c/.spacemacs.d/MouseTools" & " -x " & (buttonX as text) & " -y " & (buttonY as text) & " -leftClick"
+			do shell script "/Users/c/.spacemacs.d/MouseTools" & " -x " & (originX as text) & " -y " & (originY as text)
+		end tell
 	end if
 end tell
 ]]
@@ -511,6 +523,12 @@ hs.hotkey.bind(
   hyper, "2",
   function()
     moveToScreen(hs.window.focusedWindow(), 2)
+end)
+
+hs.hotkey.bind(
+  hyper, "3",
+  function()
+    moveToScreen(hs.window.focusedWindow(), 3)
 end)
 
 -- Binding key to start plugin.
