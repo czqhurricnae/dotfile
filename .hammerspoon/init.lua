@@ -53,6 +53,7 @@ local key2App = {
     o = {'/System/Library/CoreServices/Finder.app', 'English'},
     p = {'/Applications/System Preferences.app', 'English'},
     m = {'/Applications/iTerm.app', 'English'},
+    i = {'/Applications/IINA.app', 'English'},
 }
 
 -- Show launch application's keystroke.
@@ -103,46 +104,12 @@ windowCreateFilter:subscribe(
 end)
 
 -- Manage application's inputmethod status.
-SELECTENGLISHINPUTSOURCE = [[
-tell application "System Events"
-	set englishInputSourceIsSelected to value of attribute "AXMenuItemMarkChar" of menu item 4 of menu 1 of menu bar item 5 of menu bar 1 of application process "SystemUIServer" is "✓"
-	set {originX, originY} to paragraphs of (do shell script "/Users/c/.spacemacs.d/MouseTools -location")
-	if englishInputSourceIsSelected is false then
-		tell process "Sogou"
-			set {positionX, positionY} to position of menu bar item 1 of menu bar 1
-			set {sizeX, sizeY} to size of menu bar item 1 of menu bar 1
-			set {buttonX, buttonY} to {positionX + (sizeX div 2), positionY + (sizeY div 2)}
-			do shell script "/Users/c/.spacemacs.d/MouseTools" & " -x " & (buttonX as text) & " -y " & (buttonY as text) & " -leftClick"
-			do shell script "/Users/c/.spacemacs.d/MouseTools" & " -x " & (originX as text) & " -y " & (originY as text)
-		end tell
-	end if
-end tell
-]]
-
-SELECTCHINESEINPUTSOURCE = [[
-tell application "System Events"
-	set englishInputSourceIsSelected to value of attribute "AXMenuItemMarkChar" of menu item 4 of menu 1 of menu bar item 5 of menu bar 1 of application process "SystemUIServer" is "✓"
-	set {originX, originY} to paragraphs of (do shell script "/Users/c/.spacemacs.d/MouseTools -location")
-	if englishInputSourceIsSelected is true then
-		tell process "Sogou"
-			set {positionX, positionY} to position of menu bar item 1 of menu bar 1
-			set {sizeX, sizeY} to size of menu bar item 1 of menu bar 1
-			set {buttonX, buttonY} to {positionX + (sizeX div 2), positionY + (sizeY div 2)}
-			do shell script "/Users/c/.spacemacs.d/MouseTools" & " -x " & (buttonX as text) & " -y " & (buttonY as text) & " -leftClick"
-			do shell script "/Users/c/.spacemacs.d/MouseTools" & " -x " & (originX as text) & " -y " & (originY as text)
-		end tell
-	end if
-end tell
-]]
-
 local function Chinese()
---    hs.keycodes.currentSourceID("com.sogou.inputmethod.sogou.pinyin")
-    hs.osascript.applescript(SELECTCHINESEINPUTSOURCE)
+    hs.keycodes.currentSourceID("com.sogou.inputmethod.sogou.pinyin")
 end
 
 local function English()
---    hs.keycodes.currentSourceID("com.apple.keylayout.ABC")
-    hs.osascript.applescript(SELECTENGLISHINPUTSOURCE)
+    hs.keycodes.currentSourceID("com.apple.keylayout.US")
 end
 
 -- Build better app switcher.
@@ -162,6 +129,7 @@ hs.hotkey.bind("alt", "tab", function()
 		   switcher:next()
 		   updateFocusAppInputMethod()
 end)
+
 hs.hotkey.bind("alt-shift", "tab", function()
 		   switcher:previous()
 		   updateFocusAppInputMethod()
@@ -178,6 +146,7 @@ function updateFocusAppInputMethod()
       else
         Chinese()
       end
+
       break
     end
   end
@@ -239,11 +208,11 @@ function toggleApplication(app)
   local appPath = app[1]
   local inputMethod = app[2]
 
-  -- Tag app path use for `applicationWatcher'.
-  startAppPath = appPath
+    -- Tag app path use for `applicationWatcher'.
+    startAppPath = appPath
 
   local app = findApplication(appPath)
-  local setInputMethod = true
+    local setInputMethod = true
 
   if not app then
     -- Application not running, launch app.
@@ -255,7 +224,8 @@ function toggleApplication(app)
       if app:isFrontmost() then
         -- Show mouse circle if has focus on target application.
         drawMouseCircle()
-        setInputMethod = false
+
+                setInputMethod = false
       else
         -- Focus target application if it not at frontmost.
         mainwin:application():activate(true)
@@ -269,8 +239,14 @@ function toggleApplication(app)
       end
     end
   end
-  focusedWindowAgain()
-  updateFocusAppInputMethod()
+
+    if setInputMethod then
+        if inputMethod == 'English' then
+            English()
+        else
+            Chinese()
+        end
+    end
 end
 
 local mouseCircle = nil
@@ -319,18 +295,21 @@ function drawMouseCircle()
   end)
 end
 
-moveToScreen = function(win, n)
+moveToScreen = function(win, n, showNotify)
   local screens = hs.screen.allScreens()
   if n > #screens then
-    hs.alert.show("No enough screens " .. #screens)
+	  if showNotify then
+      hs.alert.show("No enough screens " .. #screens)
+	  end
   else
-    local toWin = hs.screen.allScreens()[n]
-    local monitorName = toWin:name()
-    if not monitorName then
-      monitorName = "Duet"
+    local toScreen = hs.screen.allScreens()[n]:name()
+    if not toScreen then
+      toScreen = "Duet"
     end
-    hs.alert.show("Move " .. win:application():name() .. " to " .. monitorName)
-    hs.layout.apply({{nil, win:title(), toWin, hs.layout.maximized, nil, nil}})
+	  if showNotify then
+      hs.alert.show("Move " .. win:application():name() .. " to " .. toScreen)
+    end
+      hs.layout.apply({{nil, win:title(), toScreen, hs.layout.maximized, nil, nil}})
   end
 end
 
@@ -357,7 +336,7 @@ function moveToBottomHalf()
   f.x = max.x
   f.y = max.y + max.h / 2
   f.w = max.w
-  f.h = max.h
+  f.h = max.h / 2
   win:setFrame(f)
 end
 
@@ -435,9 +414,9 @@ end
 local function toggleCaffeinate()
   local sleepStatus = hs.caffeinate.toggle("displayIdle")
   if sleepStatus then
-    hs.notify.new({title="System Sleep", informativeText="System never sleep"}):send()
+        hs.notify.new({title="HammerSpoon", informativeText="System never sleep"}):send()
   else
-    hs.notify.new({title="System Sleep", informativeText="System will sleep when idle"}):send()
+        hs.notify.new({title="HammerSpoon", informativeText="System will sleep when idle"}):send()
   end
 
   caffeinateSetIcon(sleepStatus)
@@ -498,7 +477,7 @@ hs.hotkey.bind(
 end)
 
 hotkey.bind(
-  hyper, '/',
+  hyper, ",",
   function()
     hints.windowHints()
 end)
@@ -516,20 +495,22 @@ end
 hs.hotkey.bind(
   hyper, "1",
   function()
-    moveToScreen(hs.window.focusedWindow(), 1)
+    moveToScreen(hs.window.focusedWindow(), 1, true)
 end)
 
 hs.hotkey.bind(
   hyper, "2",
   function()
-    moveToScreen(hs.window.focusedWindow(), 2)
+    moveToScreen(hs.window.focusedWindow(), 2, true)
 end)
 
 hs.hotkey.bind(
   hyper, "3",
   function()
-    moveToScreen(hs.window.focusedWindow(), 3)
+    moveToScreen(hs.window.focusedWindow(), 3, true)
 end)
+
+hs.hotkey.bind("cmd", "escape", English)
 
 -- Binding key to start plugin.
 Install:andUse(
@@ -543,7 +524,7 @@ Install:andUse(
   "WindowGrid",
   {
     config = {gridGeometries = {{"6x4"}}},
-    hotkeys = {show_grid = {hyper, ","}},
+    hotkeys = {show_grid = {hyper, "/"}},
     start = true
 })
 
@@ -602,7 +583,6 @@ local function reloadV2ray()
 
   hs.notify.new({title="Manatee", informativeText="Reload v2ray"}):send()
 end
-
 startV2ray()
 
 local v2rayTrayIcon = hs.menubar.new()
