@@ -7,7 +7,7 @@ hs.loadSpoon("SpoonInstall")
 
 Install=spoon.SpoonInstall
 
-local hyper = {'ctrl', 'cmd'}
+local hyper = {'cmd', 'alt'}
 
 local alert = require 'hs.alert'
 local application = require 'hs.application'
@@ -49,7 +49,7 @@ local key2App = {
     h = {'/usr/local/Cellar/emacs-mac/emacs-26.2-z-mac-7.6/Emacs.app', 'English'},
     j= {'/Applications/WizNote.app', 'English'},
     k= {'/Applications/MarginNote 3.app', 'English'},
-    l = {'/Volumes/内置500/Application/Google Chrome.app', 'English'},
+    l = {'/Applications/Google Chrome.app', 'English'},
     o = {'/System/Library/CoreServices/Finder.app', 'English'},
     p = {'/Applications/System Preferences.app', 'English'},
     m = {'/Applications/iTerm.app', 'English'},
@@ -87,7 +87,7 @@ hs.hotkey.bind(hyper, "X", showAppKeystroke)
 -- Maximize window when specify application started.
 local maximizeApps = {
     "/Applications/iTerm.app",
-    "/Volumes/内置500/Application/Google Chrome.app",
+    "/Applications/Google Chrome.app",
     "/System/Library/CoreServices/Finder.app",
 }
 
@@ -422,7 +422,7 @@ local function toggleCaffeinate()
   caffeinateSetIcon(sleepStatus)
 end
 
-hs.hotkey.bind(hyper, "[", toggleCaffeinate)
+hs.hotkey.bind(hyper, "0", toggleCaffeinate)
 caffeinateTrayIcon:setClickCallback(toggleCaffeinate)
 caffeinateSetIcon(sleepStatus)
 
@@ -554,43 +554,6 @@ hs.hotkey.bind(
       ksheetAppPath = currentAppPath
     end
 end)
-
--- hs.hotkey.new({}, "escape", nil,
---     function()
---         spoon.KSheet:hide()
---         ksheetIsShow = false
---         ksheetAppPath = ""
--- end):enable()
-
--- Execute v2ray default, fuck GFW.
-local v2rayPath = "/Users/andy/v2ray/v2ray"
-local v2rayTask = nil
-
-local function stopV2ray()
-  if v2rayTask and v2rayTask:isRunning() then
-    v2rayTask:terminate()
-  end
-end
-
-local function startV2ray()
-  v2rayTask = hs.task.new(v2rayPath, nil)
-  v2rayTask:start()
-end
-
-local function reloadV2ray()
-  stopV2ray()
-  startV2ray()
-
-  hs.notify.new({title="Manatee", informativeText="Reload v2ray"}):send()
-end
-startV2ray()
-
-local v2rayTrayIcon = hs.menubar.new()
-v2rayTrayIcon:setTitle("V2ray")
-v2rayTrayIcon:setTooltip("Click to reload V2ray")
-v2rayTrayIcon:setClickCallback(reloadV2ray)
-
-hs.hotkey.bind(hyper, "]", reloadV2ray)
 
 -- Force system sleep.
 hs.hotkey.bind(hyper, "delete", hs.caffeinate.systemSleep)
