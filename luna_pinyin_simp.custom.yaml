@@ -1,0 +1,5 @@
+patch:
+  'punctuator/import_preset': alternative
+  'key_binder/import_preset': alternative
+  style:
+    horizontal: true
