@@ -7,7 +7,7 @@ hs.loadSpoon("SpoonInstall")
 
 Install=spoon.SpoonInstall
 
-local hyper = {'cmd', 'alt'}
+local hyper = {'ctrl', 'cmd'}
 
 local alert = require 'hs.alert'
 local application = require 'hs.application'
@@ -46,7 +46,7 @@ hs.window.animationDuration = 0 -- don't waste time on animation when resize win
 
 -- Key to launch application.
 local key2App = {
-    h = {'/usr/local/Cellar/emacs-mac/emacs-26.2-z-mac-7.6/Emacs.app', 'English'},
+    h = {'/usr/local/Cellar/emacs-mac/emacs-26.3-z-mac-7.7/Emacs.app', 'English'},
     j= {'/Applications/WizNote.app', 'English'},
     k= {'/Applications/MarginNote 3.app', 'English'},
     l = {'/Applications/Google Chrome.app', 'English'},
@@ -54,6 +54,8 @@ local key2App = {
     p = {'/Applications/System Preferences.app', 'English'},
     m = {'/Applications/iTerm.app', 'English'},
     i = {'/Applications/IINA.app', 'English'},
+    y = {'/Applications/PyCharm.app', 'English'},
+    w = {'/Applications/wechatwebdevtools.app', 'English'}
 }
 
 -- Show launch application's keystroke.
