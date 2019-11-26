@@ -6,8 +6,11 @@ export PATH="$PYENV_ROOT/bin:$PATH"
 # eval "$(pyenv init -)"
 # eval "$(pyenv virtualenv-init -)"
 
+# @see: https://stackoverflow.com/questions/29732235/error-message-for-virtualenvwrapper-on-mac-os-x-yosemite-10-10-3
+export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
 export PATH="$HOME/code2ebook:$PATH"
 export PATH="$HOME/tools:$PATH"
+
 # Added by Anaconda3 4.4.0 installer
 export PATH="/Volumes/Media/anaconda/bin:$PATH"
 
