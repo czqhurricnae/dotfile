@@ -66,6 +66,7 @@ export WORKON_HOME=$HOME/.virtualenvs	      # <-- Where all virtualenvs will be 
 source /usr/local/bin/virtualenvwrapper.sh
 export PIP_VIRTUALENV_BASE=$WORKON_HOME
 export PIP_RESPECT_VIRTUALENV=true
+# export PIPENV_VENV_IN_PROJECT=1             # <-- If set, 'pipenv' create '.venv' in your project directory
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
