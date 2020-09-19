@@ -32,7 +32,7 @@ local usleep = require 'hs.timer'.usleep
 hs.hotkey.new(
     {"cmd", "shift"}, "q", nil,
     function()
-        if window.focusedWindow():application():path() == "/usr/local/Cellar/emacs-mac/emacs-26.2-rc1-mac-7.5/Emacs.app" then
+        if window.focusedWindow():application():path() == "/usr/local/Cellar/emacs-mac/emacs-26.3-z-mac-7.7/Emacs.app" then
             local app = window.focusedWindow():application()
 
             newKeyEvent({"ctrl", "cmd", "shift"}, "q", true):post(app)
@@ -55,7 +55,8 @@ local key2App = {
     m = {'/Applications/iTerm.app', 'English'},
     i = {'/Applications/IINA.app', 'English'},
     y = {'/Applications/PyCharm.app', 'English'},
-    w = {'/Applications/wechatwebdevtools.app', 'English'}
+    w = {'/Applications/wpsoffice.app', 'English'},
+    d = {'/Applications/DeepL.app', 'English'}
 }
 
 -- Show launch application's keystroke.
@@ -557,6 +558,8 @@ hs.hotkey.bind(
     end
 end)
 
+launchApp('/Applications/WirelessUtility.app')
+
 -- Force system sleep.
 hs.hotkey.bind(hyper, "delete", hs.caffeinate.systemSleep)
 
@@ -573,7 +576,7 @@ spoon.Seal:bindHotkeys({show={{"alt"}, "Space"}})
 spoon.Seal:start()
 
 -- We put reload notify at end of config, notify popup mean no error in config.
-hs.notify.new({title="Manatee", informativeText="Andy, I am online!"}):send()
+hs.notify.new({title="Manatee", informativeText="Hurricane, I am online!"}):send()
 
 -- Speak something after configuration success.
-speaker:speak("Andy, I am online!")
+speaker:speak("Hurricane, I am online!")
