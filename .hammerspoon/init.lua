@@ -520,7 +520,7 @@ Install:andUse(
   "WindowHalfsAndThirds",
   {
     config = {use_frame_correctness = true},
-    hotkeys = {max_toggle = {"cmd", "Z"}}
+    hotkeys = {max_toggle = {"cmd", "G"}}
 })
 
 Install:andUse(
