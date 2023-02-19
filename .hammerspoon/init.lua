@@ -32,7 +32,7 @@ local usleep = require 'hs.timer'.usleep
 hs.hotkey.new(
     {"cmd", "shift"}, "q", nil,
     function()
-        if window.focusedWindow():application():path() == "/usr/local/Cellar/emacs-mac/emacs-26.3-z-mac-7.7/Emacs.app" then
+        if window.focusedWindow():application():path() == "/usr/local/Cellar/emacs-mac/emacs-28.2-mac-9.1/Emacs.app" then
             local app = window.focusedWindow():application()
 
             newKeyEvent({"ctrl", "cmd", "shift"}, "q", true):post(app)
@@ -46,17 +46,19 @@ hs.window.animationDuration = 0 -- don't waste time on animation when resize win
 
 -- Key to launch application.
 local key2App = {
-    h = {'/usr/local/Cellar/emacs-mac/emacs-26.3-z-mac-7.7/Emacs.app', 'English'},
-    j= {'/Applications/WizNote.app', 'English'},
-    k= {'/Applications/MarginNote 3.app', 'English'},
+    h = {'/usr/local/Cellar/emacs-mac/emacs-28.2-mac-9.1/Emacs.app', 'English'},
+    j = {'/Applications/WizNote.app', 'English'},
+    k = {'/Applications/MarginNote 3.app', 'English'},
     l = {'/Applications/Google Chrome.app', 'English'},
     o = {'/System/Library/CoreServices/Finder.app', 'English'},
-    p = {'/Applications/System Preferences.app', 'English'},
+    p = {'/System/Applications/System Preferences.app', 'English'},
     m = {'/Applications/iTerm.app', 'English'},
     i = {'/Applications/IINA.app', 'English'},
     y = {'/Applications/PyCharm.app', 'English'},
     w = {'/Applications/wpsoffice.app', 'English'},
-    d = {'/Applications/DeepL.app', 'English'}
+    d = {'/Applications/DeepL.app', 'English'},
+    s = {'/Applications/PDF Search.app', 'English'},
+    a = {'/Applications/Anki.app'}
 }
 
 -- Show launch application's keystroke.
@@ -112,7 +114,7 @@ local function Chinese()
 end
 
 local function English()
-    hs.keycodes.currentSourceID("com.apple.keylayout.US")
+    hs.keycodes.currentSourceID("com.apple.keylayout.ABC")
 end
 
 -- Build better app switcher.
@@ -189,6 +191,8 @@ function launchApp(appPath)
   -- So we need launch chrome with --remote-debugging-port argument instead application.launchOrFocus.
   if appPath == "/Applications/Google Chrome.app" then
     hs.execute("open -a 'Google Chrome' --args '--remote-debugging-port=9222'")
+  elseif appPath == "/usr/local/Cellar/emacs-mac/emacs-28.2-mac-/Emacs.app" then
+    hs.execute("open -a 'emacs' --args '--dump-file=/Users/c/.emacs.d/.cache/dumps/spacemacs-27.2.pdmp'")
   else
     application.launchOrFocus(appPath)
   end
@@ -465,7 +469,8 @@ hs.hotkey.bind(
 end)
 
 hs.hotkey.bind(
-  hyper, "-",
+  hyper, "-"
+,
   function()
     hs.application.frontmostApplication():kill()
 end)
@@ -520,7 +525,7 @@ Install:andUse(
   "WindowHalfsAndThirds",
   {
     config = {use_frame_correctness = true},
-    hotkeys = {max_toggle = {"cmd", "G"}}
+    hotkeys = {max_toggle = {"cmd", "g"}}
 })
 
 Install:andUse(
