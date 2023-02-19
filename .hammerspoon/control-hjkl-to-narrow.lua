@@ -1,5 +1,6 @@
 -- https://github.com/asmagill/hammerspoon-config/blob/master/_scratch/viKeys.lua
 
+local window = require 'hs.window'
 local module = {}
 
 module.debugging = false -- whether to print status updates
@@ -26,7 +27,11 @@ local keyHandler = function(e)
       -- allow for auto-repeat
       replacementEvent:setProperty(event.properties.keyboardEventAutorepeat, e:getProperty(event.properties.keyboardEventAutorepeat))
     end
-    return true, { replacementEvent }
+    if window.focusedWindow():application():path() == "/usr/local/Cellar/emacs-mac/emacs-28.2-mac-9.1/Emacs.app" then
+      return false
+    else
+      return true, { replacementEvent }
+    end
   else
     return false -- do nothing to the event, just pass it along
   end
